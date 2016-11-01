@@ -15,4 +15,7 @@ RUN set -xe && \
         mv phalcon-devtools-${PHALCON_VERSION} /usr/local/phalcon-devtools && \
         ln -s /usr/local/phalcon-devtools/phalcon.php /usr/local/bin/phalcon \
         && docker-php-ext-install pdo_mysql \
-        && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+        && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \
+        && apt-get update \
+        && apt-get install -y git
+        
