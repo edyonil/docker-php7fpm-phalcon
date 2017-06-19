@@ -1,7 +1,7 @@
 FROM php:fpm
 MAINTAINER Edyonil <edyonil>
 
-ENV PHALCON_VERSION=3.0.1
+ENV PHALCON_VERSION=3.0.4
 
 # Compile Phalcon
 RUN set -xe && \
