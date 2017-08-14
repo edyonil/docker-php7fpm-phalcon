@@ -1,20 +1,17 @@
 FROM php:fpm
 MAINTAINER Edyonil <edyonil>
 
-ENV PHALCON_VERSION=3.0.4
+RUN echo deb http://packages.dotdeb.org jessie all >>  /etc/apt/sources.list
+RUN echo deb-src http://packages.dotdeb.org jessie all >>  /etc/apt/sources.list
 
-# Compile Phalcon
-RUN set -xe && \
-        curl -LO https://github.com/phalcon/cphalcon/archive/v${PHALCON_VERSION}.tar.gz && \
-        tar xzf v${PHALCON_VERSION}.tar.gz && cd cphalcon-${PHALCON_VERSION}/build && ./install && \
-        echo "extension=phalcon.so" > /usr/local/etc/php/conf.d/phalcon.ini && \
-        cd ../.. && rm -rf v${PHALCON_VERSION}.tar.gz cphalcon-${PHALCON_VERSION} && \
-        # Insall Phalcon Devtools, see https://github.com/phalcon/phalcon-devtools/
-        curl -LO https://github.com/phalcon/phalcon-devtools/archive/v${PHALCON_VERSION}.tar.gz && \
-        tar xzf v${PHALCON_VERSION}.tar.gz && \
-        mv phalcon-devtools-${PHALCON_VERSION} /usr/local/phalcon-devtools && \
-        ln -s /usr/local/phalcon-devtools/phalcon.php /usr/local/bin/phalcon \
-        && curl -sS https://getcomposer.org/installer | php --install-dir=/usr/local/bin --filename=composer \
-        && apt-get update \
-        && apt-get install -y git pdo pdo_mysql
-        
+# Phalcon repository
+RUN apt-get update
+RUN apt-get install -y wget curl
+RUN curl -s https://packagecloud.io/install/repositories/phalcon/stable/script.deb.sh | bash
+
+# Php modules
+RUN apt-get update
+RUN apt-get install -y --force-yes php7.0-phalcon php7.0-mysql php7.0-mcrypt php7.0-zip php7.0-curl
+
+# Composer
+RUN curl -sS https://getcomposer.org/installer | php --install-dir=/usr/local/bin --filename=composer \
