@@ -1,18 +1,29 @@
-FROM php:fpm
+FROM php:7.0-fpm
 MAINTAINER Edyonil <edyonil>
 
-RUN echo deb http://packages.dotdeb.org jessie all >>  /etc/apt/sources.list
-RUN echo deb-src http://packages.dotdeb.org jessie all >>  /etc/apt/sources.list
+ENV PHALCON_VERSION=3.2.2
+ENV DEBIAN_FRONTEND noninteractive
 
-# Phalcon repository
+# Dependencies
 RUN apt-get update
-RUN apt-get install -y wget curl
-RUN curl -s https://packagecloud.io/install/repositories/phalcon/stable/script.deb.sh | bash
+RUN apt-get install -y libpcre3-dev gcc make re2c git-core
 
-# Php modules
-RUN apt-get update
-RUN apt-get install -y --force-yes php7.0-phalcon php7.0-mysql php7.0-mcrypt php7.0-zip php7.0-curl
+# Compile Phalcon
+RUN git clone https://github.com/phalcon/cphalcon.git
+RUN cd cphalcon/ &&  git checkout tags/v${PHALCON_VERSION}
+RUN cd cphalcon/build && ./install
+RUN echo "extension=phalcon.so" > /usr/local/etc/php/conf.d/phalcon.ini
+RUN cd ../ && rm -rf cphalcon/
 
 # Composer
 RUN curl -sS https://getcomposer.org/installer | php -- \
     --install-dir=/usr/local/bin --filename=composer
+
+# PHP Extensions
+RUN apt-get update
+
+RUN apt-get install -y zip unzip zlib1g-dev
+RUN docker-php-ext-install pdo pdo_mysql zip
+
+RUN apt-get install -y libcurl4-openssl-dev
+RUN docker-php-ext-install curl
