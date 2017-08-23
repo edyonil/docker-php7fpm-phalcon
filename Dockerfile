@@ -6,7 +6,7 @@ ENV DEBIAN_FRONTEND noninteractive
 
 # Dependencies
 RUN apt-get update
-RUN apt-get install -y libpcre3-dev gcc make re2c git-core
+RUN apt-get install -y wget libpcre3-dev gcc make re2c git-core
 
 # Compile Phalcon
 RUN git clone https://github.com/phalcon/cphalcon.git
