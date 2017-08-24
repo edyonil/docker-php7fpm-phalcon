@@ -1,4 +1,4 @@
-FROM php:7.0-fpm
+FROM php:7.1-fpm
 MAINTAINER Edyonil <edyonil>
 
 ENV PHALCON_VERSION=3.2.2
